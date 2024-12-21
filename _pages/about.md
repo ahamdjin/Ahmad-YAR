@@ -7,9 +7,9 @@ title: "About-Me"
 
 **Education**
 
-* **[Degree Name]**, [University Name], [Graduation Year]
+* **Intermediate in Computer Science**, Pakistan Institute of Applied & Social Science, [2024]
   * [Mention any relevant coursework, achievements, or projects]
-* **[Previous Educational Qualification (if applicable)]**, [Institution Name], [Year of Completion]
-  * [Mention any relevant details]
+* **[Google Cloud Data Analytics Certificate]**, Google Cloud, 2024
+  
 
 
