@@ -59,7 +59,7 @@ plugins:
 
 author:
   name   : "Ahmad YAR"
-  avatar : "/assets/images/bio-photo.jpg"
+  avatar : "assets/images/myphoto.jpg"
   bio    : "Cloud data analyst with expertise in data preparation, analysis, and visualization. Delivers actionable insights and drives data-driven decisions."
   links:
     - label: "LinkedIn"
