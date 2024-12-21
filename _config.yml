@@ -60,7 +60,7 @@ plugins:
 author:
   name   : "Ahmad YAR"
   avatar : "/assets/images/bio-photo.jpg"
-  bio    : "A cloud data analyst, cloud data technician, and cloud operations analyst roles. Foundational data analytics skills including basic SQL, data cleaning, analysis, visualization, and business intelligence. Cloud data analysts leverage cloud computing to prepare, process, and analyze data for key business decisions. Able to share findings effectively with stakeholders and provide data-driven recommendations."
+  bio    : "Cloud data analyst with expertise in data preparation, analysis, and visualization. Delivers actionable insights and drives data-driven decisions."
   links:
     - label: "LinkedIn"
       icon: "fab fa-fw fa-linkedin"
