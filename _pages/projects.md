@@ -1,4 +1,6 @@
 ---
-permalink: /projects/
-title: "My Projects"
+permalink: /experiences/
+title: "Previous Experience"
 ---
+
+* No Experience Yer!
