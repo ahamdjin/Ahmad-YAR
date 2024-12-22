@@ -1,5 +1,4 @@
 ---
-layout: post
 title: "Project 1"
 categories: 
   - blog
