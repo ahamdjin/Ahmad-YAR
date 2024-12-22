@@ -45,13 +45,13 @@ needed to assess loan health and make data-driven decisions.
   2019
     * Figure 1 – Loan Count by Year 2012–2019
 
-![Result](/assets/images/Figure1Google.jpg)
+![Result](/_posts/Figure1Google.jpg)
   * Data analysis reveals three key aspects of the loan 
   portfolio—total outstanding balance, borrower locations, and 
   homeowner income index—displayed on the interactive 
   dashboard.
     * Figure 2 – Interactive Dashboard
 
-![Result](/assets/images/Figure2Google.jpg)
+![Result](/_posts/Figure1Google.jpg)
   * **Note:** Dashboard includes a single-value visualization, bar chart, table highlighting key metrics, and pie chart.
 
