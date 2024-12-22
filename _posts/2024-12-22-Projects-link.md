@@ -1,9 +1,8 @@
 ---
-title: "Your Post Title"
+title: "Project !"
 date: 2024-12-22
 categories: 
   - blog
-image: "/Ahmad_YAR/assets/images/Figure1Google.jpg"
 ---
 
 
