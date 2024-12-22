@@ -1,6 +1,6 @@
 ---
 title: "Previous Experience"
-layout: Experience
+layout: Home
 permalink: /experience/
 author_profile: true
 ---
