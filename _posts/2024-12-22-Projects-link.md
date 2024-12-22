@@ -3,7 +3,7 @@ title: "Your Post Title"
 date: 2024-12-22
 categories: 
   - blog
-image: "Ahmad-YAR/assets/images/Figure1Google.jpg"
+image: "/Ahmad-YAR/assets/images/Figure1Google.jpg"
 ---
 
 
