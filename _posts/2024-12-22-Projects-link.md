@@ -3,7 +3,7 @@ title: "Your Post Title"
 date: 2024-12-22
 categories: 
   - blog
-image: "../assets/images/Figure1Google.jpg"
+image: "/Ahmad_YAR/assets/images/Figure1Google.jpg"
 ---
 
 
@@ -56,5 +56,6 @@ needed to assess loan health and make data-driven decisions.
   dashboard.
     * Figure 2 – Interactive Dashboard
 
+![Result1](/Ahmad-YAR/assets/images/Figure2Google.jpg)
   * **Note:** Dashboard includes a single-value visualization, bar chart, table highlighting key metrics, and pie chart.
 
