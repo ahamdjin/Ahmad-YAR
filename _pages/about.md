@@ -9,7 +9,8 @@ title: "About-Me"
 
 * **Intermediate in Computer Science**, Pakistan Institute of Applied & Social Science, [2024]
 * **Google Cloud Data Analytics Certificate**, Google Cloud, 2024
+  * Unlocking Lending Insights | Cloud Data Analytics [View Project](assets/TheLookFintech.pdf)
 ![Google Cloud Data Analytics Certificate](../assets/images/certificate.jpg)
-  * **Unlocking Lending Insights | Cloud Data Analytics [View Project](assets/TheLookFintech.pdf)**
+
 
 
