@@ -10,8 +10,9 @@ categories:
   TheLook Fintech's data team is developing a two-part data analytics project to help the treasury 
 department analyze key metrics like cash flow, loan purpose, and borrower location. A report and 
 interactive dashboard were developed, focusing on the total number of loans issued and key metrics 
-needed to assess loan health and make data-driven decisions. 
-###Objective
+needed to assess loan health and make data-driven decisions.
+###Objective:
+
   #### Target Goal #1:
   Conduct an analysis of the Fintech dataset including a preliminary report identifying the total number of loans issued by day and year.
     
