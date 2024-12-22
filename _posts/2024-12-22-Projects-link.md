@@ -1,8 +1,12 @@
 ---
-title: "Project 1"
+layout: post
+title: "Your Post Title"
+date: 2024-12-22
 categories: 
   - blog
+image: /assets/images/Figure1Google.jpg
 ---
+
 
 ## Unlocking Lending Insights | Cloud Data Analytics
   Prepared for: TheLook Fintech Executive Team
@@ -45,7 +49,7 @@ needed to assess loan health and make data-driven decisions.
   2019
     * Figure 1 – Loan Count by Year 2012–2019
 
-[View Resul.1](/assets/images/Figure1Google.jpg)
+![Result1](/assets/images/Figure1Google.jpg)
   * Data analysis reveals three key aspects of the loan 
   portfolio—total outstanding balance, borrower locations, and 
   homeowner income index—displayed on the interactive 
