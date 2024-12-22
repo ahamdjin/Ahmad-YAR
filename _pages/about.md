@@ -3,7 +3,7 @@ permalink: /about/
 title: "About-Me"
 ---
 
-'m a curious and driven individual with a love for Numbers. I thrive in collaborative environments where I can learn and grow alongside talented professionals. I'm always seeking new challenges and opportunities to expand my knowledge and contribute to meaningful projects.
+I'm a curious and driven individual with a love for Numbers. I thrive in collaborative environments where I can learn and grow alongside talented professionals. I'm always seeking new challenges and opportunities to expand my knowledge and contribute to meaningful projects.
 
 **Education**
 
