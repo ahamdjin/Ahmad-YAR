@@ -1,5 +1,5 @@
 ---
-title: "Project !"
+title: "Project 1"
 date: 2024-12-22
 categories: 
   - blog
