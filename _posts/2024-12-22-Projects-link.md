@@ -11,6 +11,7 @@ categories:
 department analyze key metrics like cash flow, loan purpose, and borrower location. A report and 
 interactive dashboard were developed, focusing on the total number of loans issued and key metrics 
 needed to assess loan health and make data-driven decisions.
+
 ###Objective:
 
   #### Target Goal #1:
