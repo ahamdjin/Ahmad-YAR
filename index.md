@@ -21,5 +21,5 @@ author_profile: true
 **Projects**
 
 * **Unlocking Lending Insights | Cloud Data Analytics [View PDF](assets/TheLookFintech.pdf)**
-![Google Cloud Data Analytics Certificate](/assets/images/certificate.jpg) 
+
 
