@@ -1,7 +1,7 @@
 ---
+layout: post
 title: "Project 1"
-categories:
-  - Blog
+categories: jekyll update
 ---
 
 ## Unlocking Lending Insights | Cloud Data Analytics
