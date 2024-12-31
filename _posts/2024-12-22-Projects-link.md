@@ -1,5 +1,5 @@
 ---
-title: "Unlocking Lending Insights | Cloud Data Analytics"
+title: "Unlocking Lending Insights"
 date: 2024-12-22
 categories: 
   - blog
