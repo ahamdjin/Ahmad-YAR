@@ -1,13 +1,10 @@
 ---
-title: "Project 1"
+title: "Unlocking Lending Insights | Cloud Data Analytics"
 date: 2024-12-22
 categories: 
   - blog
 ---
 
-
-## Unlocking Lending Insights | Cloud Data Analytics
-  Prepared for: TheLook Fintech Executive Team
 ### Overview
   TheLook Fintech's data team is developing a two-part data analytics project to help the treasury 
 department analyze key metrics like cash flow, loan purpose, and borrower location. A report and 
