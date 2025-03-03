@@ -149,3 +149,455 @@ This pipeline:
 * Using Glue bookmarks prevents reprocessing old CSV data.
 * Proper scheduling in EventBridge orchestrates the entire workflow without manual intervention.
 * A correct setup of security groups, IAM roles, and SSL ensures secure, stable operation.
+
+
+### Lambda Function For Ringba insight
+
+```python
+import requests
+import csv
+import io
+from datetime import datetime, timedelta
+import boto3
+import os
+
+def process_day(day, api_token):
+    """
+    Fetch data for a specific day from Ringba API and store it in S3.
+    
+    Args:
+        day (datetime.date): The date to process.
+        api_token (str): Ringba API token from environment variables.
+    """
+    # Define the start and end of the day in UTC
+    day_start_str = day.strftime("%Y-%m-%dT00:00:00Z")
+    day_end_str = (day + timedelta(days=1)).strftime("%Y-%m-%dT00:00:00Z")
+
+    # Ringba API endpoint
+    api_url = "https://api.ringba.com/v2/RAa6f60f99a00045baba297656dbfe8893/insights"
+
+    # Headers for API request
+    headers = {
+        "Authorization": f"Token {api_token}",
+        "Content-Type": "application/json",
+    }
+
+    # Request body for Ringba API, using day-specific dates
+    request_body = {
+        "reportStart": day_start_str,
+        "reportEnd": day_end_str,
+        "groupByColumns": [{"column": "campaignName", "displayName": "Campaign"}],
+        "valueColumns": [
+            {"column": "callCount", "aggregateFunction": None},
+            {"column": "liveCallCount", "aggregateFunction": None},
+            {"column": "completedCalls", "aggregateFunction": None},
+            {"column": "endedCalls", "aggregateFunction": None},
+            {"column": "connectedCallCount", "aggregateFunction": None},
+            {"column": "payoutCount", "aggregateFunction": None},
+            {"column": "convertedCalls", "aggregateFunction": None},
+            {"column": "nonConnectedCallCount", "aggregateFunction": None},
+            {"column": "duplicateCalls", "aggregateFunction": None},
+            {"column": "blockedCalls", "aggregateFunction": None},
+            {"column": "incompleteCalls", "aggregateFunction": None},
+            {"column": "earningsPerCallGross", "aggregateFunction": None},
+            {"column": "conversionAmount", "aggregateFunction": None},
+            {"column": "payoutAmount", "aggregateFunction": None},
+            {"column": "profitGross", "aggregateFunction": None},
+            {"column": "profitMarginGross", "aggregateFunction": None},
+            {"column": "convertedPercent", "aggregateFunction": None},
+            {"column": "callLengthInSeconds", "aggregateFunction": None},
+            {"column": "avgHandleTime", "aggregateFunction": None},
+            {"column": "totalCost", "aggregateFunction": None},
+        ],
+        "orderByColumns": [{"column": "callCount", "direction": "desc"}],
+        "formatTimespans": True,
+        "formatPercentages": True,
+        "generateRollups": False,  # No summary rows
+        "maxResultsPerGroup": 1000,
+        "filters": [],
+        "formatTimeZone": "America/Los_Angeles",
+    }
+
+    # Fetch data from Ringba API
+    response = requests.post(api_url, headers=headers, json=request_body)
+    if response.status_code != 200:
+        raise Exception(f"Failed to fetch data for {day}: {response.status_code}, {response.text}")
+
+    data = response.json()
+    report_data = data.get("report", {}).get("records", [])
+
+    # Create CSV in memory
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    # Write CSV header
+    writer.writerow([
+        "Date", "Campaign Name", "Call Count", "Live Call Count", "Completed Calls",
+        "Ended Calls", "Connected Call Count", "Payout Count", "Converted Calls",
+        "Non-Connected Call Count", "Duplicate Calls", "Blocked Calls",
+        "Incomplete Calls", "Earnings Per Call Gross", "Conversion Amount",
+        "Payout Amount", "Profit Gross", "Profit Margin Gross", "Converted Percent",
+        "Call Length (Seconds)", "Average Handle Time", "Total Cost"
+    ])
+
+    # Write data rows, excluding "Unknown" or null campaigns
+    for record in report_data:
+        campaign_name = record.get("campaignName")
+        if campaign_name and campaign_name != "Unknown":
+            writer.writerow([
+                day.strftime("%Y-%m-%d"),
+                campaign_name,
+                record.get("callCount", 0),
+                record.get("liveCallCount", 0),
+                record.get("completedCalls", 0),
+                record.get("endedCalls", 0),
+                record.get("connectedCallCount", 0),
+                record.get("payoutCount", 0),
+                record.get("convertedCalls", 0),
+                record.get("nonConnectedCallCount", 0),
+                record.get("duplicateCalls", 0),
+                record.get("blockedCalls", 0),
+                record.get("incompleteCalls", 0),
+                record.get("earningsPerCallGross", 0.0),
+                record.get("conversionAmount", "0.00"),
+                record.get("payoutAmount", "0.00"),
+                record.get("profitGross", "0.00"),
+                record.get("profitMarginGross", "0.00%"),
+                record.get("convertedPercent", "0.00%"),
+                record.get("callLengthInSeconds", "00:00:00"),
+                record.get("avgHandleTime", "00:00:00"),
+                record.get("totalCost", "0.00"),
+            ])
+
+    csv_data = output.getvalue()
+
+    # Upload to S3
+    s3 = boto3.client("s3")
+    bucket_name = "ringba-insight"
+    file_key = f"ringba-data-{day.strftime('%Y-%m-%d')}.csv"
+
+    s3.put_object(
+        Bucket=bucket_name,
+        Key=file_key,
+        Body=csv_data
+    )
+
+    print(f"Stored data for {day} to s3://{bucket_name}/{file_key}")
+
+
+def lambda_handler(event, context):
+    """
+    Lambda handler to process data for 'yesterday' in UTC.
+    
+    Args:
+        event (dict): Event data (not used here).
+        context (object): Lambda context object.
+    
+    Returns:
+        dict: Response with status code and message.
+    """
+    # Get Ringba API token
+    api_token = os.environ.get("RINGBA_API_TOKEN")
+    if not api_token:
+        raise ValueError("Missing RINGBA_API_TOKEN in environment variables")
+
+    # Calculate 'yesterday' in UTC
+    yesterday = datetime.utcnow().date() - timedelta(days=1)
+
+    # Fetch and store data for yesterday
+    process_day(yesterday, api_token)
+
+    return {
+        "statusCode": 200,
+        "body": f"Successfully processed data for {yesterday}"
+    }
+```
+### Lambda Function For Ringba Call logs
+
+```python
+import requests
+import csv
+import io
+from datetime import datetime, timedelta
+import boto3
+import os
+
+def lambda_handler(event, context):
+    """
+    Fetch Ringba /calllogs data for *yesterday* only, and upload a single CSV
+    into the 'ringba-calllogs' S3 bucket. Uses the smaller 'value_columns' set
+    you included, but you can easily add more columns.
+
+    1. Determines yesterday's date in UTC
+    2. Builds the ringba POST request for that 24-hour window
+    3. Collects records, builds CSV in memory, uploads to S3
+    """
+
+    # -- 1) Figure out "yesterday" in UTC
+    today_utc = datetime.utcnow().date()
+    yesterday_utc = today_utc - timedelta(days=1)
+
+    # Start of yesterday (00:00 UTC)
+    start_dt = datetime(yesterday_utc.year, yesterday_utc.month, yesterday_utc.day)
+    # End of yesterday (which is 00:00 UTC "today")
+    end_dt   = start_dt + timedelta(days=1)
+
+    day_str = yesterday_utc.strftime("%Y-%m-%d")
+    day_start = start_dt.strftime("%Y-%m-%dT00:00:00Z")
+    day_end   = end_dt.strftime("%Y-%m-%dT00:00:00Z")
+
+    # -- 2) Read Ringba token from environment variable
+    api_token = os.environ.get("RINGBA_API_TOKEN")
+    if not api_token:
+        raise ValueError("Missing RINGBA_API_TOKEN in environment variables.")
+
+    # Example account ID, adjust if needed
+    account_id = "RAa6f60f99a00045baba297656dbfe8893"
+    api_url = f"https://api.ringba.com/v2/{account_id}/calllogs"
+
+    # -- 3) Prepare S3 client & bucket name
+    s3 = boto3.client('s3')
+    bucket_name = "ringba-calllogs"
+
+    # -- 4) The columns you want (based on your snippet)
+    value_columns = [
+        {"column": "callDt"},  
+        {"column": "inboundCallId"},  
+        {"column": "hasConnected"},   
+        {"column": "isIncomplete"},  
+        {"column": "campaignName"},  
+        {"column": "publisherName"}, 
+        {"column": "inboundPhoneNumber"},
+        {"column": "number"},  
+        {"column": "timeToCallInSeconds"},
+        {"column": "isDuplicate"},
+        {"column": "endCallSource"},
+        {"column": "targetName"},
+        {"column": "callLengthInSeconds"},
+        {"column": "conversionAmount"},
+        {"column": "payoutAmount"},
+    ]
+
+    # -- 5) Build the request body for "yesterday"
+    request_body = {
+        "reportStart": day_start,
+        "reportEnd": day_end,
+        "orderByColumns": [{"column": "callDt", "direction": "desc"}],
+        "filters": [],
+        "valueColumns": value_columns,
+        "formatTimespans": True,
+        "formatPercentages": True,
+        "formatDateTime": True,
+        "formatTimeZone": "America/Sao_Paulo",
+        "size": 150,
+        "offset": 0
+    }
+
+    print(f"Fetching yesterday's data ({day_str}) from {day_start} to {day_end}...")
+
+    resp = requests.post(
+        api_url,
+        headers={
+            "Authorization": f"Token {api_token}",
+            "Content-Type": "application/json"
+        },
+        json=request_body
+    )
+
+    if resp.status_code != 200:
+        print(f"ERROR {resp.status_code}: {resp.text}")
+        return {
+            "statusCode": resp.status_code,
+            "body": f"Failed to fetch data: {resp.text}"
+        }
+
+    data = resp.json()
+    records = data.get("report", {}).get("records", [])
+    print(f"  Received {len(records)} records for {day_str}.")
+
+    # -- 6) Build CSV in memory
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    if len(records) == 0:
+        # If no data, just write 2 rows with "Date" and "No Data"
+        writer.writerow(["Date", "No Data"])
+        writer.writerow([day_str, ""])
+    else:
+        # Dynamically gather all record keys for columns
+        all_fields = set()
+        for r in records:
+            all_fields.update(r.keys())
+        # We'll ensure "Date" is included
+        all_fields.add("Date")
+        # Sort columns so "Date" is first
+        fieldnames_sorted = ["Date"] + sorted(f for f in all_fields if f != "Date")
+        # Write header
+        writer.writerow(fieldnames_sorted)
+
+        # Fill out each record
+        for r in records:
+            r["Date"] = day_str
+            row_data = [r.get(fn, "") for fn in fieldnames_sorted]
+            writer.writerow(row_data)
+
+    csv_content = output.getvalue()
+
+    # -- 7) Upload to S3 with a single file name for "yesterday"
+    file_key = f"ringba-calllogs-{day_str}.csv"
+
+    s3.put_object(
+        Bucket=bucket_name,
+        Key=file_key,
+        Body=csv_content
+    )
+
+    print(f"Uploaded s3://{bucket_name}/{file_key}")
+
+    return {
+        "statusCode": 200,
+        "body": f"Successfully fetched yesterday's calllogs for {day_str} into {bucket_name}."
+    }
+```
+### Glue Script For Ringba Insight
+
+```python
+import sys
+from awsglue.utils import getResolvedOptions
+from pyspark.context import SparkContext
+from awsglue.context import GlueContext
+from awsglue.job import Job
+
+args = getResolvedOptions(sys.argv, ['JOB_NAME', 'INPUT_PATH'])
+sc = SparkContext()
+glueContext = GlueContext(sc)
+job = Job(glueContext)
+job.init(args['JOB_NAME'], args)
+
+def main():
+    try:
+        # 1. Read CSV files directly from the specified path (including subfolders)
+        source = glueContext.create_dynamic_frame.from_options(
+            connection_type="s3",
+            format="csv",
+            connection_options={
+                "paths": [args['INPUT_PATH']],  # e.g. s3://my-bucket/some-prefix/
+                "recurse": True  # Reads through subdirectories if needed
+            },
+            format_options={
+                "withHeader": True,
+                "separator": ",",
+                "quoteChar": '"',
+                "escapeChar": "\\",
+                "encoding": "UTF-8-BOM"
+            }
+        )
+
+        # 2. Write the data directly to the PostgreSQL table
+        glueContext.write_dynamic_frame.from_jdbc_conf(
+            frame=source,
+            catalog_connection="Postgresql connection",  # Replace with your actual Glue Connection name
+            connection_options={
+                "dbtable": "ringba_insight",
+                "database": "postgres",
+                "batchsize": 1000
+            }
+        )
+
+        job.commit()
+        print("SUCCESS: Data loaded to ringba_insight")
+
+    except Exception as e:
+        print(f"ERROR: {str(e)}")
+        job.commit()
+
+if __name__ == "__main__":
+    main()
+```
+### Glue Script For Ringba Calllogs
+
+```python
+import sys
+from awsglue.utils import getResolvedOptions
+from pyspark.context import SparkContext
+from awsglue.context import GlueContext
+from awsglue.job import Job
+from awsglue.transforms import ApplyMapping
+
+args = getResolvedOptions(sys.argv, ['JOB_NAME', 'INPUT_PATH'])
+sc = SparkContext()
+glueContext = GlueContext(sc)
+job = Job(glueContext)
+job.init(args['JOB_NAME'], args)
+
+def main():
+    try:
+        # 1. Read the CSV from S3
+        source = glueContext.create_dynamic_frame.from_options(
+            connection_type="s3",
+            format="csv",
+            connection_options={
+                "paths": [args['INPUT_PATH']],  # e.g. "s3://ringba-calllogs/"
+                "recurse": True
+            },
+            format_options={
+                "withHeader": True,
+                "separator": ",",
+                "quoteChar": '"',
+                "escapeChar": "\\",
+                "encoding": "UTF-8-BOM"
+            }
+        )
+
+        # DEBUG: Print the schema and some sample rows to confirm the columns
+        print("=== CSV Schema (inferred by Glue) ===")
+        source.printSchema()
+
+        df_source = source.toDF()
+        print("=== Sample Rows ===")
+        df_source.show(5, truncate=False)
+
+        # 2. Map CSV columns to your ringba_calllogs table columns
+        #    Left side = EXACT CSV headers from your screenshot
+        #    Right side = EXACT Postgres column names
+        mapped = ApplyMapping.apply(
+            frame=source,
+            mappings=[
+                ("Date",                 "string", "date",                 "string"),
+                ("callDt",              "string", "calldt",               "string"),
+                ("callLengthInSeconds", "string", "calllengthinseconds",  "string"),
+                ("campaignName",        "string", "campaignname",         "string"),
+                ("conversionAmount",    "string", "conversionamount",     "string"),
+                ("endCallSource",       "string", "endcallsource",        "string"),
+                ("hasConnected",        "string", "hasconnected",         "string"),
+                ("inboundCallId",       "string", "inboundcallid",        "string"),
+                ("inboundPhoneNumber",  "string", "inboundphonenumber",   "string"),
+                ("isDuplicate",         "string", "isduplicate",          "string"),
+                ("number",              "string", "number",               "string"),
+                ("publisherName",       "string", "publishername",        "string"),
+                ("targetName",          "string", "targetname",           "string"),
+                ("timeToCallInSeconds", "string", "timetocallinseconds",  "string"),
+            ]
+        )
+
+        # 3. Write the mapped data into ringba_calllogs in PostgreSQL
+        glueContext.write_dynamic_frame.from_jdbc_conf(
+            frame=mapped,
+            catalog_connection="Postgresql connection",  # your actual Glue connection name
+            connection_options={
+                "dbtable": "ringba_calllogs",
+                "database": "postgres",
+                "batchsize": 1000
+            }
+        )
+
+        job.commit()
+        print("SUCCESS: Data loaded into ringba_calllogs")
+
+    except Exception as e:
+        print(f"ERROR: {str(e)}")
+        job.commit()
+
+if __name__ == "__main__":
+    main()
+```
