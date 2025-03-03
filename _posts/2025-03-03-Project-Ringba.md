@@ -105,6 +105,7 @@ def lambda_handler(event, context):
     return {"statusCode": 200, "body": f"Data for {yesterday} fetched and stored."}
 ```
 ![Result1](/Ahmad-YAR/assets/images/EventBridge1.png)
+
 ![Result1](/Ahmad-YAR/assets/images/LambdaCalllogs.png)
 
 ---
@@ -165,6 +166,7 @@ if __name__ == "__main__":
     main()
 ```
 ![Result1](/Ahmad-YAR/assets/images/GlueCalllogsScript.png)
+
 ![Result1](/Ahmad-YAR/assets/images/GlueCalllogsRun.png)
 
 ---
