@@ -1,6 +1,12 @@
-# Ringba AWS Data Pipeline Documentation
+---
+title: "Ringba AWS Data Pipeline Documentation"
+date: 2025-03-03
+categories: 
+  - blog
+---
+---
 
-## 1. Project Overview
+## Project Overview
 
 **Objective:** Automatically ingest call log data from Ringba, store it in Amazon S3, then load it daily into an Amazon RDS (PostgreSQL) database using AWS Glue. Finally, connect to the database via Power BI for reporting.
 
