@@ -104,8 +104,67 @@ def lambda_handler(event, context):
     print(f"Uploaded {file_key} to {bucket_name}")
     return {"statusCode": 200, "body": f"Data for {yesterday} fetched and stored."}
 ```
+![Result1](/Ahmad-YAR/assets/images/EventBridge1.png)
+![Result1](/Ahmad-YAR/assets/images/LambdaCalllogs.png)
 
-**Screenshot Suggestion #3:** Lambda function code in the AWS console or reference to your IDE.
+---
+## 4. AWS Glue Job
+  ### 4.1 Glue Job Purpose
+    Reads all CSV files from s3://ringba-calllogs, but uses job bookmarks so it only ingests new files once.
+    Transforms data columns if necessary (ApplyMapping).
+    Writes the results into PostgreSQL (in your RDS instance).
+### 4.2 Job Bookmarks
+    Ensures the job doesn’t reprocess old CSV files each day.
+    In the Glue console, set “Job bookmark” to Enable in Advanced properties.
+### 4.3 Scheduling
+    Either via the Glue Scheduler or an additional EventBridge rule.
+    Runs daily after the Lambda finishes—e.g., 00:10 UTC.
+### 4.4 Glue Job Script
+
+```python
+Copy
+Edit
+import sys
+from awsglue.utils import getResolvedOptions
+from pyspark.context import SparkContext
+from awsglue.context import GlueContext
+from awsglue.job import Job
+from awsglue.transforms import ApplyMapping
+
+args = getResolvedOptions(sys.argv, ['JOB_NAME', 'INPUT_PATH'])
+sc = SparkContext()
+glueContext = GlueContext(sc)
+job = Job(glueContext)
+job.init(args['JOB_NAME'], args)
+
+def main():
+    # 1. Read from S3
+    source = glueContext.create_dynamic_frame.from_options(
+        connection_type="s3",
+        format="csv",
+        connection_options={"paths": [args["INPUT_PATH"]], "recurse": True},
+        format_options={"withHeader": True}
+    )
+
+    # 2. ApplyMapping if column names differ
+    mapped = ApplyMapping.apply(
+        frame=source,
+        mappings=[("Date", "string", "date", "string"), ("CampaignName", "string", "campaignname", "string")]
+    )
+
+    # 3. Write to PostgreSQL
+    glueContext.write_dynamic_frame.from_jdbc_conf(
+        frame=mapped,
+        catalog_connection="PostgreSQLConnection",
+        connection_options={"dbtable": "ringba_calllogs", "database": "postgres"}
+    )
+    job.commit()
+
+if __name__ == "__main__":
+    main()
+```
+![Result1](/Ahmad-YAR/assets/images/GlueCalllogsScript.png)
+![Result1](/Ahmad-YAR/assets/images/GlueCalllogsRun.png)
 
 ---
 
