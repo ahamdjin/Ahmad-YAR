@@ -1,5 +1,5 @@
 ---
-title: "Enhancing Data Analysis and Visualization with Power BI"
+title: "Ringba AWS Data Pipeline"
 date: 2025-01-13
 categories: 
   - blog
