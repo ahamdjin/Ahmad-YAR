@@ -108,6 +108,7 @@ def lambda_handler(event, context):
 ![Result1](/Ahmad-YAR/assets/images/LambdaCalllogs.png)
 
 ---
+
 ## 4. AWS Glue Job
   ### 4.1 Glue Job Purpose
   * Reads all CSV files from s3://ringba-calllogs, but uses job bookmarks so it only ingests new files once.
@@ -168,6 +169,41 @@ if __name__ == "__main__":
 
 ---
 
+## 5. Amazon RDS (PostgreSQL)
+### 5.1 Table Schema
+* sql
+    CopyEdit
+    CREATE TABLE ringba_calllogs (
+    date                varchar(255),
+    campaignname        varchar(255),
+    callcount           int,
+    -- ...
+    );
+
+![Result1](/Ahmad-YAR/assets/images/RDSConnectivity.png)
+
+### 5.2 Verifying New Rows
+* Use a query like:
+    sql
+    CopyEdit
+    SELECT date, campaignname, callcount
+    FROM ringba_calllogs
+    ORDER BY date DESC
+    LIMIT 10;
+
+We Can see the latest day’s data appear each morning after Glue finishes.
+
+---
+
+## 6. Power BI Integration
+ * Created an ODBC or native PostgreSQL connector in Power BI.
+ * Provided host = <your-db-endpoint>.rds.amazonaws.com, port = 5432, database = postgres, plus credentials.
+ * Installed RDS CA Certificate in Windows trust store if using SSL.
+
+![Result1](/Ahmad-YAR/assets/images/PowerBI.png)
+
+---
+
 ## 7. Putting It All Together
 1. **EventBridge runs Lambda daily**
    * Lambda writes `ringba-data-YYYY-MM-DD.csv` to S3.
@@ -209,6 +245,8 @@ This pipeline:
 * Proper scheduling in EventBridge orchestrates the entire workflow without manual intervention.
 * A correct setup of security groups, IAM roles, and SSL ensures secure, stable operation.
 
+
+## Below are the original Scripts used in the Pipeline
 
 ### Lambda Function For Ringba insight
 
