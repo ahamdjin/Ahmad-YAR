@@ -110,15 +110,15 @@ def lambda_handler(event, context):
 ---
 ## 4. AWS Glue Job
   ### 4.1 Glue Job Purpose
-    Reads all CSV files from s3://ringba-calllogs, but uses job bookmarks so it only ingests new files once.
-    Transforms data columns if necessary (ApplyMapping).
-    Writes the results into PostgreSQL (in your RDS instance).
+  * Reads all CSV files from s3://ringba-calllogs, but uses job bookmarks so it only ingests new files once.
+  * Transforms data columns if necessary (ApplyMapping).
+  * Writes the results into PostgreSQL (in your RDS instance).
 ### 4.2 Job Bookmarks
-    Ensures the job doesn’t reprocess old CSV files each day.
-    In the Glue console, set “Job bookmark” to Enable in Advanced properties.
+  *  Ensures the job doesn’t reprocess old CSV files each day.
+  *  In the Glue console, set “Job bookmark” to Enable in Advanced properties.
 ### 4.3 Scheduling
-    Either via the Glue Scheduler or an additional EventBridge rule.
-    Runs daily after the Lambda finishes—e.g., 00:10 UTC.
+  *  Either via the Glue Scheduler or an additional EventBridge rule.
+  *  Runs daily after the Lambda finishes—e.g., 00:10 UTC.
 ### 4.4 Glue Job Script
 
 ```python
