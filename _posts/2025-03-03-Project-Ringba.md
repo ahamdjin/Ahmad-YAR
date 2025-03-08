@@ -32,7 +32,7 @@ categories:
 4. **Power BI**
    * Connects to the RDS instance to display dashboards.
 
-**Screenshot Suggestion #1:** An architecture diagram or high-level overview.
+![Result1](/Ahmad-YAR/assets/images/11.drawio.png)
 
 ---
 
@@ -46,8 +46,6 @@ categories:
 ### 3.2 Scheduling with EventBridge
 * Created a cron rule in EventBridge, e.g., `cron(0 0 * * ? *)`, to run Lambda at midnight UTC daily.
 * This triggers the Lambda, which fetches data for "yesterday."
-
-![Result1](/Ahmad-YAR/assets/images/11.drawio.png)
 
 ### 3.3 Lambda Code Sample
 
