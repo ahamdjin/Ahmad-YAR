@@ -63,7 +63,7 @@ plugins:
 author:
   name   : "Ahmad YAR"
   title  : "Cloud Data Analyst | Data-Driven Decision Maker"
-  avatar : "assets/images/Cool.png"
+  avatar : "assets/images/image.png"
   bio    : "Cloud data analyst with expertise in data preparation, analysis, and visualization. Delivers actionable insights and drives data-driven decisions."
   links:
     - label: "LinkedIn"
