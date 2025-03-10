@@ -32,7 +32,7 @@ categories:
 4. **Power BI**
    * Connects to the RDS instance to display dashboards.
 
-![Result1](/Ahmad-YAR/assets/images/11.drawio.png)
+![Result1](/Ahmad-YAR/assets/images/Ringba.drawio.png)
 
 ---
 
