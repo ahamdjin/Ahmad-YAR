@@ -1,0 +1,671 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"perplexity/sonar\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Act as a skilled editor revising AI-generated text to sound authentically human. Follow these rules:\\n\\n1. Punctuation Adjustments\\n   - Replace em dashes, semicolons, or rephrase sentences where appropriate.\\n   - Avoid semicolons in casual contexts; use periods or conjunctions (e.g., 'and,' 'but').\\n   - Remove mid-sentence ellipses unless mimicking deliberate hesitation.\\n   - Limit parenthetical asides; integrate explanations into the main sentence.\\n   - Use colons sparingly.\\n\\n2. Language\\n   - Replace hedging phrases with direct statements.\\n   - Avoid stock transitions.\\n   - Vary repetitive terms.\\n   - Use contractions in informal contexts.\\n   - Replace overly formal words with simpler alternatives.\\n\\n3. Style\\n   - Prioritize concise, varied sentence lengths.\\n   - Allow minor imperfections.\\n   - Maintain the core message but adjust tone to match the audience.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"You are a researcher and expert copywriter in a business development team of an AI Automation Agency. Generate exactly one LinkedIn post that adheres to LinkedIn's API formatting guidelines and is easy for humans to read. Follow these rules:\\n\\nStructure:\\n1. Hook: Start with a bold opening line using Unicode characters (e.g., '𝐁𝐎𝐋𝐃 𝐒𝐓𝐀𝐓𝐄𝐌𝐄𝐍𝐓').\\n2. Body: Use short paragraphs (1-3 sentences) separated by \\n\\n.\\n3. Use bullet points (•) for key features or highlights.\\n4. End with a clear call-to-action (e.g., 'Comment below with your thoughts!').\\n\\nFormatting Requirements:\\n- Remove all numeric citation brackets like [2], [3], [4] from the text.\\n- Instead of citation brackets, if needed, add a brief phrase like 'according to Google I/O 2025' or 'as reported by DeepMind' naturally within the sentence.\\n- No Markdown or rich text formatting.\\n- Use Unicode characters or emojis for emphasis (e.g., ★, 🚀).\\n- Include up to 3 relevant hashtags at the end (e.g., #AI #Automation).\\n- For URLs or references, use placeholders like [Link] instead of raw URLs.\\n- If mentioning users or companies, use official LinkedIn URN format (e.g., 'urn:li:organization:123456').\\n\\nContent Rules:\\n- Max 1,200 characters.\\n- Avoid promotional language.\\n- Include one statistical claim or industry insight.\\n- Add one personal anecdote or professional observation.\\n\\nReturn the post as plain text without additional commentary.\\n\\nInput:  \\\"{{ $('Open Router Choose Keyword For Content Creation').item.json.choices[0].message.content }}\"\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "id": "12b71ce9-5d6f-4298-be03-fad1a344af94",
+      "name": "Research Topic- Perplexity1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1220,
+        140
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Jue0GnjApDZ9omGd",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"most-trending\": {\n\n    \"#1\": { \n\n      \"query\":\"{{ $json.related_queries.rising[0].query }}\",\n      \"score\":\"{{ $json.related_queries.rising[0].extracted_value }}\"\n\n    },\n\n\n    \"#2\": { \n\n      \"query\":\"{{ $json.related_queries.rising[1].query }}\",\n      \"score\":\"{{ $json.related_queries.rising[1].extracted_value }}\"\n\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "92ae2dc3-0e48-444b-b51a-a27f27500185",
+      "name": "2 Most Trending1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        0,
+        140
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the top array from your JSON\nconst topItems = $('Google Trends1').first().json.related_queries.top;\n\n// Filter the items to only include those with extracted_value > 30\nconst filtered = topItems.filter(item => item.extracted_value > 30);\n\n// Map the filtered items to their query values and join them with commas\nconst resultString = filtered.map(item => item.query).join(', ');\n\n// Return the result in a new JSON property\nreturn [{ json: { result: resultString } }];\n"
+      },
+      "id": "92c55d25-7448-4ce2-8cd0-12399114ca04",
+      "name": "High search volume keywords1",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        140,
+        140
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "content": "## Find Trend\n\n",
+        "height": 260,
+        "width": 420
+      },
+      "id": "fffa09da-28d9-4da9-8adf-571103c1ca6b",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -160,
+        60
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## High Volume Keywords\n\n",
+        "height": 260,
+        "width": 260
+      },
+      "id": "9b18a35a-e815-4345-a1e4-8e7b8f61bbfa",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        280,
+        60
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Choosing Blog Topic\n\n\n",
+        "height": 260,
+        "width": 540
+      },
+      "id": "32ac57f4-de94-43ad-8bb2-80fd70428993",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        600,
+        60
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Research\n\n\n",
+        "height": 260,
+        "width": 600
+      },
+      "id": "54bd8d2e-cc8e-4e32-8ebe-7ddf31af7b31",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1180,
+        60
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "=ai agents"
+            },
+            {
+              "name": "geo",
+              "value": "US"
+            },
+            {
+              "name": "hl",
+              "value": "en"
+            },
+            {
+              "name": "date",
+              "value": "={{ $now.minus({ days: 3 }).format('yyyy-MM-dd') }} {{ $now.format('yyyy-MM-dd') }}"
+            },
+            {
+              "name": "data_type",
+              "value": "RELATED_QUERIES"
+            },
+            {
+              "name": "engine",
+              "value": "google_trends"
+            },
+            {
+              "name": "api_key",
+              "value": "481b071ce28808d475d37e54401f0dd9baede8b00ee2812e3dd2551cea5d60b2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6db201c9-3656-429d-8b54-d21a11971d1d",
+      "name": "Google Trends1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -140,
+        140
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Social media Posting",
+        "height": 260,
+        "width": 220
+      },
+      "id": "1c783ca1-6238-44e0-9734-2bc392aa3bc8",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1820,
+        60
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Status update",
+        "height": 260
+      },
+      "id": "ac945ff4-b2ce-404e-bf82-b661fcda3387",
+      "name": "Sticky Note15",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2080,
+        60
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Z2csvw-CyGOa9axc-xJy37P_OW7rxgdFt0mBqPu3nb4",
+          "mode": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "db71afa2-1ec4-47c9-b155-89eeb6687b31",
+      "name": "Check Previous Topics",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        300,
+        140
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "KbuzDQttYqgfv0NX",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Handle both array and single item inputs\nlet topics = [];\n\n// Support for: items = [{json: {...}}, ...]\nif (Array.isArray(items)) {\n  items.forEach(item => {\n    if (item.json && item.json.Topic) {\n      topics.push(item.json.Topic);\n    }\n  });\n} else if (items.json && items.json.Topic) {\n  // Support for single object\n  topics.push(items.json.Topic);\n}\n\n// Remove empty/undefined/null topics\ntopics = topics.filter(Boolean);\n\nreturn [{ json: { recent_topics: topics.join(', ') } }];\n"
+      },
+      "id": "58bfc619-6bb4-4185-a9be-a5a60bf79dc6",
+      "name": "Format Recent Topics",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Z2csvw-CyGOa9axc-xJy37P_OW7rxgdFt0mBqPu3nb4",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gid=0",
+          "cachedResultUrl": "[YOUR_GOOGLE_SHEETS_URL]",
+          "cachedResultName": "Sheet1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Topic": "={{ $('Open Router Choose Keyword For Content Creation').item.json.choices[0].message.content }}",
+            "Status": "Posted",
+            "AI Output": "={{ $('Research Topic- Perplexity1').item.json.choices[0].message.content }}",
+            "Date Posted": "={{ $now.format('yyyy-MM-dd') }}",
+            "Platform": "LinkedIn",
+            "Image URL": "={{ $('Download Unsplash Image').item.json.results[0].urls.regular }}"
+          },
+          "matchingColumns": [
+            "Topic"
+          ],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "AI Output",
+              "displayName": "AI Output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date Posted",
+              "displayName": "Date Posted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Platform",
+              "displayName": "Platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Impressions",
+              "displayName": "Impressions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Reactions",
+              "displayName": "Reactions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Comments",
+              "displayName": "Comments",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Post ID / URL",
+              "displayName": "Post ID / URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Image URL",
+              "displayName": "Image URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "4cca3c20-bf3d-4dec-a72c-60876cde363b",
+      "name": "Append or update row in sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        2140,
+        140
+      ],
+      "typeVersion": 4.5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "KbuzDQttYqgfv0NX",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "person": "jvZ9zSpIhA",
+        "text": "={{ $('Research Topic- Perplexity1').item.json.choices[0].message.content }}",
+        "shareMediaCategory": "IMAGE",
+        "additionalFields": {}
+      },
+      "id": "2852d1c0-45a1-48c8-8d45-b344b796d69e",
+      "name": "Create a post",
+      "type": "n8n-nodes-base.linkedIn",
+      "position": [
+        1880,
+        140
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "znqR1uEWy5lq5wRI",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.unsplash.com/search/photos",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $('Open Router Choose Keyword For Image').item.json.choices[0].message.content }}"
+            },
+            {
+              "name": "per_page",
+              "value": "1"
+            },
+            {
+              "name": "client_id",
+              "value": "1skVbAEiDqjBhtJYblJj6cMaItspD8zaWCLmqhbfQ5M"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7a4fe612-b4e5-4769-81d0-bb0e9445c055",
+      "name": "Search Unsplash Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1400,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.results[0].urls.regular }}",
+        "options": {}
+      },
+      "id": "d9324c00-8e2f-4c1a-9e4f-16ef56764eeb",
+      "name": "Download Unsplash Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1580,
+        140
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        140
+      ],
+      "id": "7707e994-00c6-48f1-8bf9-6f743140d38d",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"openai/gpt-4.1-mini\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are part of a team that creates world-class SEO blog posts for an AI automation agency.\\n\\nThe blog posts are published on the website of [COMPANY NAME + DESCRIPTION + PRODUCTS + TARGET MARKET]. The main goal is to help [YOUR_COMPANY] rank higher for its products and services through SEO-focused content.\\n\\nHere is a list of topics that have already been posted:\\n{{ $json.recent_topics }}\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"YOUR INSTRUCTIONS (read carefully):\\n\\n- Your task is to pick only ONE keyword from the provided list that is NOT already covered or too similar to any of the recent topics. Use case-insensitive, semantic matching.\\n- If both keywords are too similar to recent topics, pick the one with the highest trend value (but avoid repeats if possible).\\n- Consider both SEO value for [YOUR_COMPANY] and the trendiness.\\n- **MOST IMPORTANT:** Output only the ONE chosen keyword, and nothing else. Do NOT include any explanations, commentary, reasons, extra lines, text, formatting, or context. Do NOT mention any other keyword. Do NOT use quotes, parentheses, markdown, or any formatting—just the plain keyword on a single line.\\n- If you output anything other than just the keyword, your answer will be rejected and not used. And also Don't add any Note or anything as we don't need it no explantation whatever you did is good.\\n\\nHere are the Keywords to choose from:\\n{{ $('High search volume keywords1').last().json.result }}\\n\\nReturn only the single chosen keyword, as plain text. Nothing else.\"\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "id": "bc91a603-fe20-43f5-84b4-8e9b66815462",
+      "name": "Open Router Choose Keyword For Content Creation",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        680,
+        140
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Jue0GnjApDZ9omGd",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"mistralai/mixtral-8x7b-instruct\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an expert at selecting visual search keywords for Unsplash image queries. Your job is to take a blog post topic and produce a single, short search keyword (one or two words) that will return highly relevant and visually striking images on Unsplash. Your choices must be precise, clear, and guarantee that the resulting images are relevant to the blog post theme. Focus on **what will show up best visually, not what is semantically closest**.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"YOUR INSTRUCTIONS (read carefully):\\n\\n- Given the blog topic below, select exactly ONE keyword (1-2 words, no more) that, when used to search Unsplash, will bring up the most visually representative, high-quality images for this blog post topic.\\n- The keyword should be broad enough to guarantee strong, relevant visuals, but specific enough to match the topic. Avoid overly abstract or generic words.\\n- MOST IMPORTANT: Output **only** the single Unsplash search keyword. Do NOT output any explanation, commentary, reasoning, context, formatting, punctuation, or extra lines—just the plain keyword on a single line.\\n- Do NOT use quotes, parentheses, markdown, or formatting—just the keyword itself. If you output anything other than the keyword, your answer will be rejected.\\n\\nBlog Post Topic:\\n{{ $json.choices[0].message.content }}\\n\\nRespond with the single best Unsplash search keyword. Nothing else.\"\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "id": "69041900-5f8d-41c4-9c4b-22bdcbffe8a8",
+      "name": "Open Router Choose Keyword For Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        960,
+        140
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Jue0GnjApDZ9omGd",
+          "name": "Header Auth account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Research Topic- Perplexity1": {
+      "main": [
+        [
+          {
+            "node": "Search Unsplash Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2 Most Trending1": {
+      "main": [
+        [
+          {
+            "node": "High search volume keywords1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "High search volume keywords1": {
+      "main": [
+        [
+          {
+            "node": "Check Previous Topics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Trends1": {
+      "main": [
+        [
+          {
+            "node": "2 Most Trending1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Previous Topics": {
+      "main": [
+        [
+          {
+            "node": "Format Recent Topics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Recent Topics": {
+      "main": [
+        [
+          {
+            "node": "Open Router Choose Keyword For Content Creation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a post": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Unsplash Image": {
+      "main": [
+        [
+          {
+            "node": "Download Unsplash Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Unsplash Image": {
+      "main": [
+        [
+          {
+            "node": "Create a post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Trends1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Open Router Choose Keyword For Content Creation": {
+      "main": [
+        [
+          {
+            "node": "Open Router Choose Keyword For Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Open Router Choose Keyword For Image": {
+      "main": [
+        [
+          {
+            "node": "Research Topic- Perplexity1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "fc6d8933ce2ef9afdca8fccf3e01543070d97ccbbe6db8ad2c2390efecece1f7"
+  }
+}
